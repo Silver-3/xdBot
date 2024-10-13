@@ -1,0 +1,7 @@
+node_modules/
+.eslintrc.json
+config.json
+package-lock.json
+*.sqlite
+*.bat
+*.txt
