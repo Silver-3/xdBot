@@ -64,5 +64,5 @@ module.exports.run = async (interaction, client) => {
 
 module.exports.data = new SlashCommand()
     .setName("howto")
-    .setDescription("For bot developer only")
+    .setDescription("Send the how to guide")
     .setDefaultMemberPermissions(Discord.PermissionFlagsBits.Administrator)

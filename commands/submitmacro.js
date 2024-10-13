@@ -31,6 +31,6 @@ module.exports.run = async (interaction, client) => {
 };
 
 module.exports.data = new SlashCommand()
-    .setName("send")
-    .setDescription("For bot developer only")
+    .setName("submitmacro")
+    .setDescription("Send the embed to be able to upload a macro")
     .setDefaultMemberPermissions(Discord.PermissionFlagsBits.Administrator)

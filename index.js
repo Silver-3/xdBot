@@ -11,11 +11,13 @@ client.commands = new Discord.Collection();
 client.config = config;
 client.preLoginLogQueue = [];
 
-const originalConsoleLog = console.log;
-console.log = function(message) {
-    client.preLoginLogQueue.push(message);
-    originalConsoleLog(message);
-};
+if (config.sendLogs == true) {
+    const originalConsoleLog = console.log;
+    console.log = function (message) {
+        client.preLoginLogQueue.push(message);
+        originalConsoleLog(message);
+    };
+}
 
 ["commands", "events"].forEach(handler => {
     require(`./handlers/${handler}`)(client);
