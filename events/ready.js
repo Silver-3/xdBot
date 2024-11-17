@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const Discord = require('discord.js');
 
 module.exports = {
@@ -7,6 +9,18 @@ module.exports = {
      * @param {Discord.Client} client 
      */
     run: async (client) => {
+        let logMsg;
+
+        const logsDir = path.join(__dirname, '..', 'logs');
+        if (!fs.existsSync(logsDir)) {
+            fs.mkdirSync(logsDir);
+        }
+
+        const logFileName = `log-${new Date().toISOString().slice(0, 10)}.txt`;
+        const logFilePath = path.join(logsDir, logFileName);
+
+        fs.appendFileSync(logFilePath, `--- Log Start: ${new Date().toISOString()} ---\n`);
+
         if (client.config.sendLogs == true) {
             const originalConsoleLog = console.log;
 
@@ -19,7 +33,7 @@ module.exports = {
             const botMessages = messages.filter(msg => msg.author.id === client.user.id);
             botMessages.forEach(msg => msg.delete());
 
-            let logMsg = await dmChannel.send("```Bot Uptime: 0s\n\nBot Logs:```");
+            logMsg = await dmChannel.send("```Bot Uptime: 0s\n\nBot Logs:```");
             let startTime = Date.now();
             let logQueue = [];
             let isProcessingQueue = false;
@@ -59,6 +73,8 @@ module.exports = {
                     } else {
                         await logMsg.edit("```Bot Uptime: " + getFormattedUptime() + "\n\nBot Logs:\n" + updatedLogs + "```");
                     }
+
+                    fs.appendFileSync(logFilePath, `${new Date().toISOString()} - ${logEntry}\n`);
                 }
 
                 isProcessingQueue = false;
@@ -71,6 +87,8 @@ module.exports = {
                 originalConsoleLog(message);
                 logQueue.push(message);
                 processLogQueue();
+
+                fs.appendFileSync(logFilePath, `${new Date().toISOString()} - ${message}\n`);
             };
         }
 
