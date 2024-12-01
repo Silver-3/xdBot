@@ -20,11 +20,14 @@ module.exports = {
             }
         }
 
-        if (interaction.isButton() && interaction.customId == 'delete_eval') return interaction.message.delete();
-        if (interaction.isButton()) return await require('../managers/macroManager.js').buttonManager(interaction);
-        if (interaction.isModalSubmit()) return await require('../managers/macroManager.js').modalManager(interaction, client);
-        if (interaction.isStringSelectMenu()) return await require('../managers/howtoManager.js').reponseManager(interaction, client);
+        const submitButton = new Discord.ButtonBuilder()
+            .setLabel('Upload a macro')
+            .setStyle(Discord.ButtonStyle.Link)
+            .setURL(client.config.url + 'submit-macro?userID=' + interaction.user.id)
 
+        if (interaction.isButton() && interaction.customId == 'delete_eval') return interaction.message.delete();
+        if (interaction.isButton() && interaction.customId == 'submit') return interaction.reply({ components: [new Discord.ActionRowBuilder().addComponents(submitButton)], ephemeral: true});
+        if (interaction.isStringSelectMenu()) return await require('../managers/howtoManager.js').reponseManager(interaction, client);
         if (!interaction.isCommand()) return;
 
         const commandName = interaction.commandName

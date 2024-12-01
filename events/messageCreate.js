@@ -21,6 +21,7 @@ module.exports = {
         if (!message.guild || message.author.bot) return;
 
         if (message.content.startsWith('-eval')) {
+            // Check if the user is the developer
             if (message.author.id !== client.config.devId) return message.channel.send("You do not have permission to use this command.");
 
             message.delete();

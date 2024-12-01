@@ -11,14 +11,17 @@ module.exports = {
     run: async (client) => {
         let logMsg;
 
+        // Ensure the logs folder exists
         const logsDir = path.join(__dirname, '..', 'logs');
         if (!fs.existsSync(logsDir)) {
             fs.mkdirSync(logsDir);
         }
 
+        // Generate log file name based on current date
         const logFileName = `log-${new Date().toISOString().slice(0, 10)}.txt`;
         const logFilePath = path.join(logsDir, logFileName);
 
+        // Initialize log file
         fs.appendFileSync(logFilePath, `--- Log Start: ${new Date().toISOString()} ---\n`);
 
         if (client.config.sendLogs == true) {
@@ -74,6 +77,7 @@ module.exports = {
                         await logMsg.edit("```Bot Uptime: " + getFormattedUptime() + "\n\nBot Logs:\n" + updatedLogs + "```");
                     }
 
+                    // Append to log file
                     fs.appendFileSync(logFilePath, `${new Date().toISOString()} - ${logEntry}\n`);
                 }
 
@@ -88,6 +92,7 @@ module.exports = {
                 logQueue.push(message);
                 processLogQueue();
 
+                // Write log to file
                 fs.appendFileSync(logFilePath, `${new Date().toISOString()} - ${message}\n`);
             };
         }

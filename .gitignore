@@ -1,4 +1,6 @@
 node_modules/
+logs/
+macros/
 .eslintrc.json
 config.json
 package-lock.json

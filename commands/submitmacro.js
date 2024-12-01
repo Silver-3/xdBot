@@ -9,28 +9,32 @@ const Discord = require('discord.js');
 module.exports.run = async (interaction, client) => {
     if (interaction.user.id == '737862913309540413') {
         const embed = new Discord.EmbedBuilder()
-        	.setTitle('Click below to submit a macro')
-            .setDescription('Upload your macros with the submit button below\nIf you are unsure on how to upload a macro, check the vido in <#1216311142616399914>\n\nIf you need to manual submit a level for whatever reason, go to <#1289230708023234611>\n\n-# If the channel permissions don\'t update, then just give it a minute then try to resubmit the macro. If this still doesn\'t work then DM <@737862913309540413>')
+        	.setTitle('Click below to get a link to submit a macro')
+            .setDescription('\n\n-# If you need help, please DM <@737862913309540413>')
             .setColor('Blurple')
 
         const button = new Discord.ButtonBuilder()
-            .setCustomId('sumbit')
-            .setLabel('Submit')
-            .setStyle(Discord.ButtonStyle.Success);
-
-        const actionrow = new Discord.ActionRowBuilder()
-            .addComponents(button);
+            .setLabel('Get link')
+            .setStyle(Discord.ButtonStyle.Success)
+            .setCustomId('submit')
 
         interaction.reply({
             embeds: [embed],
-            components: [actionrow]
+            components: [new Discord.ActionRowBuilder().addComponents(button)]
         });
     } else {
-        interaction.reply({ content: `You dont have permission to use this.`, ephemeral: true });
+        const submitButton = new Discord.ButtonBuilder()
+            .setLabel('Upload a macro')
+            .setStyle(Discord.ButtonStyle.Link)
+            .setURL(client.config.url + 'submit-macro?userID=' + interaction.user.id)
+
+        interaction.reply({
+            components: [new Discord.ActionRowBuilder().addComponents(submitButton)],
+            ephemeral: true
+        });
     }
 };
 
 module.exports.data = new SlashCommand()
     .setName("submitmacro")
-    .setDescription("Send the embed to be able to upload a macro")
-    .setDefaultMemberPermissions(Discord.PermissionFlagsBits.Administrator)
+    .setDescription("Lets you submit a macro")
