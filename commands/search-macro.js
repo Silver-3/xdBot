@@ -26,8 +26,11 @@ module.exports.run = async (interaction, client) => {
     const fullNameMatches = [];
     const uniqueMatches = new Set();
 
-    channels.forEach(channel => {
-        channel.threads.cache.forEach(thread => {
+    for (const channel of channels) {
+        const archivedThreads = await channel.threads.fetchArchived({ fetchAll: true });
+        const allThreads = [...channel.threads.cache.values(), ...archivedThreads.threads.values()];
+
+        allThreads.forEach(thread => {
             if (thread.name.toLowerCase().includes(levelName.toLowerCase())) {
                 fullNameMatches.push(thread.id);
                 uniqueMatches.add(thread.id);
@@ -36,14 +39,14 @@ module.exports.run = async (interaction, client) => {
 
         levelName.split(' ').forEach(word => {
             if (!threads[word]) threads[word] = [];
-            channel.threads.cache.filter(thread => thread.name.toLowerCase().includes(word.toLowerCase())).forEach(thread => {
+            allThreads.filter(thread => thread.name.toLowerCase().includes(word.toLowerCase())).forEach(thread => {
                 if (!uniqueMatches.has(thread.id)) {
                     uniqueMatches.add(thread.id);
                     threads[word].push(thread.id);
                 }
             });
         });
-    });
+    }
 
     let message = "";
 
@@ -81,17 +84,9 @@ module.exports.data = new SlashCommand()
     .addStringOption(option => option
         .setName("filetype")
         .setDescription("What file type would you like the macro be if possible")
-        .addChoices([{
-                name: "Both",
-                value: "both"
-            },
-            {
-                name: ".gdr files",
-                value: "gdr"
-            },
-            {
-                name: ".xd files",
-                value: "xd"
-            }
+        .addChoices([
+            { name: "Both", value: "both" },
+            { name: ".gdr files", value: "gdr" },
+            { name: ".xd files", value: "xd" }
         ])
         .setRequired(true));
